@@ -1,4 +1,4 @@
-use tauri::menu::{MenuBuilder, SubmenuBuilder};
+use tauri::menu::{MenuBuilder, SubmenuBuilder, MenuItem};
 
 use tauri::Manager;
 use tauri::Emitter;
@@ -6,14 +6,17 @@ use tauri::Emitter;
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
-            let file_menu = SubmenuBuilder::new(app, "File")
-                .text("open", "Open")
-                .text("quit", "Quit")
+            let copy_item = MenuItem::with_id(app, "copy", "Copy", true, Some("Alt+C"))?;
+            let paste_item = MenuItem::with_id(app, "paste", "Paste", true, Some("Alt+P"))?;
+
+            let file_menu = SubmenuBuilder::new(app, "&File")
+                .text("open", "&Open")
+                .text("quit", "&Quit")
                 .build()?;
 
-            let edit_menu = SubmenuBuilder::new(app, "Edit")
-                .text("copy", "Copy")
-                .text("paste", "Paste")
+            let edit_menu = SubmenuBuilder::new(app, "&Edit")
+                .item(&copy_item)
+                .item(&paste_item)
                 .build()?;
 
             let menu = MenuBuilder::new(app)
